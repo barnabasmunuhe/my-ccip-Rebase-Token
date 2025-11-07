@@ -8,6 +8,8 @@ import {Pool} from "@ccip/contracts/src/v0.8/ccip/libraries/Pool.sol";
 import {IERC20} from "@ccip/contracts/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 import {IRebaseToken} from "./Interfaces/IRebaseToken.sol";
 
+import {}
+
 /**
  * @author  .
  * @title   .
@@ -43,12 +45,24 @@ contract myRebaseTokenPool is TokenPool{
     _validateLockOrBurn(lockOrBurnIn);
     // sending the userInterestRate data
     uint256 userInterestRate = IRebaseToken(address(i_token)).getUserInterestRate(lockOrBurnIn.originalSender);
-    
+    // burning the tokens
+    IRebaseToken(address(i_token)).burn(lockOrBurnIn.amount);
+    // preparing data 
+    lockOrBurnOut = Pool.LockOrBurnOutV1 ({
+      destTokenAddress : getRemoteToken(lockOrBurnIn.remoteChainSelector),
+      destPoolData : abi.encode(userInterest)
+    });
+   
   }
 
   function releaseOrMint(
     Pool.ReleaseOrMintInV1 calldata releaseOrMintIn
   ) external returns (Pool.ReleaseOrMintOutV1 memory releaseOrMintOut)
-  {}
+  {
+    _validateReleaseOrMint(releaseOrMintIn);
+
+
+  }
+}
 }
 

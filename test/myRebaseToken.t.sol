@@ -84,7 +84,7 @@ contract RebaseTokenTest is Test {
         vm.prank(user);
         vault.deposit{value: depositAmount}();
 
-        // 2. warp time
+        // 2. warp time and check balance 
         vm.warp(block.timestamp + time);
 
         // check balance of token balance after time has passed
@@ -92,7 +92,7 @@ contract RebaseTokenTest is Test {
 
         // adding rewards to the balance in the vault
         // uint256 rewards = tokenBalance-depositAmount;
-        vm.deal(owner, tokenBalance - depositAmount);
+        vm.deal(owner, tokenBalance - depositAmount);//fakes the existence of yield by crediting the vault’s owner with the ETH needed to cover users’ accrued profits.
         vm.prank(owner); //the owner is the one to call addRewardsToVault function
         addRewardsToVault(tokenBalance - depositAmount);
 

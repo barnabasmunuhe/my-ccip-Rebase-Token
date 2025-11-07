@@ -71,7 +71,7 @@ contract Vault {
      * @param   _amount  The amount of tokens to redeem.
      */
     function redeem(uint256 _amount) external {
-        if (_amount == type(uint256).max) {
+        if (_amount == type(uint96).max) {
             //this solves problem token dust(leftover tokens that can accumulate when user withdraws  and burn their entire balance )
             _amount = i_rebaseToken.balanceOf(msg.sender);
         }
