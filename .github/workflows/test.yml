@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # RPC URLs are stored as GitHub Secrets (fallback to empty string when secrets are not available)
+      # RPC URLs stored as GitHub secrets
       SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL || '' }}
       ARB_SEPOLIA_RPC_URL: ${{ secrets.ARB_SEPOLIA_RPC_URL || '' }}
       FOUNDRY_PROFILE: ci
@@ -22,9 +22,12 @@ jobs:
 
       - name: Install Foundry
         run: |
+          # Install foundryup
           curl -L https://foundry.paradigm.xyz | bash
-          source ~/.foundry/bin/foundryup
-          foundryup
+          # Run the installer immediately
+          ~/.foundry/bin/foundryup
+          # Make forge, cast, etc. available in this workflow
+          export PATH="$HOME/.foundry/bin:$PATH"
 
       - name: Normalize line endings
         run: find . -type f -name "*.sol" -exec dos2unix {} \;
