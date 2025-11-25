@@ -162,11 +162,9 @@ contract CrossChainTest is Test {
         ); // Approve the fee
         // log the values before bridging
         uint256 balanceBeforeBridge = IERC20(address(localToken)).balanceOf(user);
-        console.log("Local balance before bridge: %d", balanceBeforeBridge);
 
         IRouterClient(localNetworkDetails.routerAddress).ccipSend(remoteNetworkDetails.chainSelector, message); // Send the message
         uint256 sourceBalanceAfterBridge = IERC20(address(localToken)).balanceOf(user);
-        console.log("Local balance after bridge: %d", sourceBalanceAfterBridge);
         assertEq(sourceBalanceAfterBridge, balanceBeforeBridge - amountToBridge);
         vm.stopPrank();
 
@@ -175,13 +173,10 @@ contract CrossChainTest is Test {
         vm.warp(block.timestamp + 900);
         // get initial balance on Arbitrum
         uint256 initialArbBalance = IERC20(address(remoteToken)).balanceOf(user);
-        console.log("Remote balance before bridge: %d", initialArbBalance);
         vm.selectFork(localFork); // the switchChainAndRouteMessage function assumes you are on the local fork
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
 
-        console.log("Remote user interest rate: %d", remoteToken.getUserInterestRate(user));
         uint256 destBalance = IERC20(address(remoteToken)).balanceOf(user);
-        console.log("Remote balance after bridge: %d", destBalance);
         assertEq(destBalance, initialArbBalance + amountToBridge);
     }
 
