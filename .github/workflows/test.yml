@@ -1,48 +1,40 @@
-name: Foundry CI
+name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
+
+env:
+  FOUNDRY_PROFILE: ci
 
 jobs:
-  build:
+  check:
+    name: Foundry project
     runs-on: ubuntu-latest
-
-    env:
-      # RPC URLs stored as GitHub secrets
-      SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL || '' }}
-      ARB_SEPOLIA_RPC_URL: ${{ secrets.ARB_SEPOLIA_RPC_URL || '' }}
-      FOUNDRY_PROFILE: ci
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Show Forge version
         run: |
-          # Install foundryup
-          curl -L https://foundry.paradigm.xyz | bash
-          # Run the installer immediately
-          ~/.foundry/bin/foundryup
-          # Make forge, cast, etc. available in this workflow
-          export PATH="$HOME/.foundry/bin:$PATH"
+          forge --version
 
-      - name: Normalize line endings
-        run: find . -type f -name "*.sol" -exec dos2unix {} \;
+      - name: Run Forge fmt
+        run: |
+          forge fmt --check
+        id: fmt
 
-      - name: Install dependencies
-        run: forge install
+      - name: Run Forge build
+        run: |
+          forge build --sizes
+        id: build
 
-      - name: Apply formatting
-        run: forge fmt
-
-      - name: Check formatting
-        run: forge fmt --check
-
-      - name: Compile contracts
-        run: forge build
-
-      - name: Run tests
-        run: forge test -vvv
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
