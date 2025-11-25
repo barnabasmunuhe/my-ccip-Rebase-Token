@@ -20,13 +20,13 @@ contract CrossChainTest is Test {
     address user = makeAddr("user");
     uint256 private constant SOME_ETH = 1e8;
 
-    CCIPLocalSimulatorFork ccipLocalSimulatorFork;
-
     uint256 sepoliaFork;
     uint256 arbSepoliaFork;
 
     RebaseToken sepoliaToken;
     RebaseToken arbSepoliaToken;
+
+    CCIPLocalSimulatorFork ccipLocalSimulatorFork; // storing the CCIPLocalSimulatorFork so that we can use it in our test contract
 
     Register.NetworkDetails sepoliaNetworkDetails;
     Register.NetworkDetails arbSepoliaNetworkDetails;
