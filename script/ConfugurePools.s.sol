@@ -7,7 +7,19 @@ import {TokenPool} from "@ccip/contracts/src/v0.8/ccip/pools/TokenPool.sol";
 import {RateLimiter} from "@ccip/contracts/src/v0.8/ccip/libraries/RateLimiter.sol";
 
 contract ConfugurePools is Script {
-    function run(address remoteToken, address localPool, address remotePool, uint64 remoteChainSelector, bool isAllowed, bool inboundRateLimiterIsEnabled, uint128 inboundRateLimiterCapacity,uint128 inboundRateLimiterRate, bool outboundRateLimiterIsEnabled, uint128 outboundRateLimiterCapacity, uint128 outboundRateLimiterRate) public {
+    function run(
+        address remoteToken,
+        address localPool,
+        address remotePool,
+        uint64 remoteChainSelector,
+        bool isAllowed,
+        bool inboundRateLimiterIsEnabled,
+        uint128 inboundRateLimiterCapacity,
+        uint128 inboundRateLimiterRate,
+        bool outboundRateLimiterIsEnabled,
+        uint128 outboundRateLimiterCapacity,
+        uint128 outboundRateLimiterRate
+    ) public {
         vm.startBroadcast();
         //       struct ChainUpdate {
         //     uint64 remoteChainSelector; // ──╮ Remote chain selector
@@ -22,11 +34,19 @@ contract ConfugurePools is Script {
         TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: remoteChainSelector,
-            allowed: true,
+            allowed: isAllowed,
             remotePoolAddress: encodeRemotePool,
             remoteTokenAddress: abi.encode(remoteToken),
-            outboundRateLimiterConfig: RateLimiter.Config({isEnabled: outboundRateLimiterIsEnabled, capacity: outboundRateLimiterCapacity, rate: outboundRateLimiterRate}),
-            inboundRateLimiterConfig: RateLimiter.Config({isEnabled: inboundRateLimiterIsEnabled, capacity: inboundRateLimiterCapacity, rate: inboundRateLimiterRate})
+            outboundRateLimiterConfig: RateLimiter.Config({
+                isEnabled: outboundRateLimiterIsEnabled,
+                capacity: outboundRateLimiterCapacity,
+                rate: outboundRateLimiterRate
+            }),
+            inboundRateLimiterConfig: RateLimiter.Config({
+                isEnabled: inboundRateLimiterIsEnabled,
+                capacity: inboundRateLimiterCapacity,
+                rate: inboundRateLimiterRate
+            })
         });
         TokenPool(address(localPool)).applyChainUpdates(chainsToAdd);
         vm.stopBroadcast();

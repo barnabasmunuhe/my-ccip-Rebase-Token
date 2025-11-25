@@ -8,8 +8,8 @@ import {Vault} from "../src/Vault.sol";
 import {RebaseToken} from "../src/my-rebaseToken.sol";
 import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
 
-contract deployTokenAndPool is Script{
-    function run() public returns (RebaseToken token, address pool){
+contract deployTokenAndPool is Script {
+    function run() public returns (RebaseToken token, address pool) {
         vm.startBroadcast();
         // Deploy Rebase Token
         token = new RebaseToken();
@@ -22,7 +22,7 @@ contract deployTokenAndPool is Script{
 }
 
 contract deployVault is Script {
-    function run() public returns (Vault vault){
+    function run() public returns (Vault vault) {
         vm.startBroadcast();
         // Deploy Vault
         vault = new Vault(IRebaseToken(address(vault)));

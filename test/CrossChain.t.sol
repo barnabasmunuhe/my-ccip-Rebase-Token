@@ -79,7 +79,6 @@ contract CrossChainTest is Test {
             address(arbSepoliaToken),
             address(arbSepoliaTokenPool)
         );
-        
 
         configureTokenPools(
             arbSepoliaFork,
@@ -88,7 +87,6 @@ contract CrossChainTest is Test {
             address(sepoliaToken),
             address(sepoliaTokenPool)
         );
-
     }
 
     function configureTokenPools(
@@ -97,7 +95,6 @@ contract CrossChainTest is Test {
         uint64 remoteChainSelector,
         address remotePool,
         address remoteTokenAddress
-        
     ) public {
         vm.selectFork(fork);
         // bytes remotePoolAddress = new bytes[](1);
