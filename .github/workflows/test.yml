@@ -1,45 +1,45 @@
-name: CI
+name: Foundry CI
 
 on:
   push:
+    branches: [main]
   pull_request:
-  workflow_dispatch:
-
-env:
-  FOUNDRY_PROFILE: ci
+    branches: [main]
 
 jobs:
-  check:
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
+  build:
+    runs-on: ubuntu-latest
 
-    name: Foundry project
-    runs-on: ${{ matrix.os }}
+    env:
+      # RPC URLs are stored as GitHub Secrets (fallback to empty string when secrets are not available)
+      SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL || '' }}
+      ARB_SEPOLIA_RPC_URL: ${{ secrets.ARB_SEPOLIA_RPC_URL || '' }}
+      FOUNDRY_PROFILE: ci
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-
-      - name: Show Forge version
         run: |
-          forge --version
+          curl -L https://foundry.paradigm.xyz | bash
+          source ~/.foundry/bin/foundryup
+          foundryup
 
-      - name: Run Forge fmt
-        run: |
-          forge fmt --check
-        id: fmt
+      - name: Normalize line endings
+        run: find . -type f -name "*.sol" -exec dos2unix {} \;
 
-      - name: Run Forge build
-        run: |
-          forge build --sizes
-        id: build
+      - name: Install dependencies
+        run: forge install
 
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+      - name: Apply formatting
+        run: forge fmt
+
+      - name: Check formatting
+        run: forge fmt --check
+
+      - name: Compile contracts
+        run: forge build
+
+      - name: Run tests
+        run: forge test -vvv
