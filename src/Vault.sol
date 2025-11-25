@@ -25,7 +25,7 @@
 pragma solidity 0.8.24;
 
 // ===== Imports =====
-import {IRebaseToken} from "./Interfaces/IRebaseToken.sol";
+import {IRebaseToken} from "./interfaces/IRebaseToken.sol";
 
 // ===== Errors =====
 error Vault__RedeemFailed();

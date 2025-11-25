@@ -6,7 +6,7 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {RebaseToken} from "../src/my-rebaseToken.sol";
 import {Vault} from "../src/Vault.sol";
-import {IRebaseToken} from "../src/Interfaces/IRebaseToken.sol";
+import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
 import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IAccessControl} from "@openzeppelin-contracts/contracts/access/IAccessControl.sol";
 import {RebaseToken__InterestCanOnlyDecrease} from "../src/my-rebaseToken.sol";
