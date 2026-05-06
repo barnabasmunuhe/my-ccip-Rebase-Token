@@ -157,10 +157,10 @@ contract CrossChainTest is Test {
         );
         vm.startPrank(user);
         IERC20(localNetworkDetails.linkAddress)
-        .approve(
-        localNetworkDetails.routerAddress,
-        IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message)
-    ); // Approve the fee
+            .approve(
+                localNetworkDetails.routerAddress,
+                IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message)
+            ); // Approve the fee
 
         // log the values before bridging
         uint256 balanceBeforeBridge = IERC20(address(localToken)).balanceOf(user);

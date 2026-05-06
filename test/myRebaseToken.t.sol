@@ -11,6 +11,8 @@ import {Ownable} from "@openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IAccessControl} from "@openzeppelin-contracts/contracts/access/IAccessControl.sol";
 import {RebaseToken__InterestCanOnlyDecrease} from "../src/my-rebaseToken.sol";
 
+error Vault__RedeemFailed();
+
 contract RebaseTokenTest is Test {
     // ===== State Variables =====
     RebaseToken private rebaseToken;
@@ -22,18 +24,22 @@ contract RebaseTokenTest is Test {
 
     function setUp() public {
         vm.startPrank(owner);
-        rebaseToken = new RebaseToken();
+        rebaseToken = new RebaseToken(); // this new instance of the rebase token contract will be used in our tests
         vault = new Vault(IRebaseToken(address(rebaseToken)));
-        // giving the test contract mint and burn role
+        // giving the test contract mint and burn role for the owner to be able to mint and burn tokens during testing
         rebaseToken.grantMintAndBurnRole(address(vault));
         vm.stopPrank();
     }
 
     function addRewardsToVault(uint256 rewardAmount) public {
         (bool success,) = payable(address(vault)).call{value: rewardAmount}(""); // sending some ETH to the vault
+        if (!success) {
+            revert Vault__RedeemFailed();
+        }
     }
 
     function testDeposit(uint256 amount) public {
+        // this is a fuzz test for deposit function
         amount = uint96(bound(amount, 1e5, type(uint96).max));
         vm.startPrank(user);
         vm.deal(user, amount); // giving some ETH to the user
